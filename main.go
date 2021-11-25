@@ -68,7 +68,7 @@ func main() {
   }
 
   // form polynomial
-  p := poly.NewPolynomialWithRootsFromArray(roots[:100]) // 1000 roots takes about 10G ram 
+  p := poly.NewPolynomialWithRootsFromArray(roots) // 1000 roots takes about 10G ram 
 
   // commit to polynomial
   ts, err := kzg.NewTrustedSetup(len(p.Coefficients))
