@@ -13,3 +13,5 @@ GENERAL PUBLIC LICENSE Version 3
 
 // later can prove possession
 ```
+
+### all action is in the `main.go`
