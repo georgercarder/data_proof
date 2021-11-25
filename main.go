@@ -15,6 +15,7 @@ type DataPoint struct {
   Filename string
   Idx int
   Data byte
+  GlobalDisambiguator []byte // to prevent sampled point collisions with different data that shares points
 }
 
 func Slice2Int64(slc []byte) (r int64) {
@@ -47,7 +48,7 @@ func main() {
     randIdxArray = append(randIdxArray, rand.Int()%len(data))
   }
   
-  // hash all points {filename, idx, data[idx]} for the sampled idx
+  // hash all points {filename, idx, data[idx], globalDisambiguator} for the sampled idx
   var roots []*big.Int
   rootsCH := make(chan *big.Int)
   for _, idx := range randIdxArray {
@@ -55,7 +56,8 @@ func main() {
       p := data[i]
       dp := &DataPoint{Filename: exampleFilename,
                        Idx: i,
-                       Data: p}
+                       Data: p,
+                       GlobalDisambiguator: seedHash}
       marshalled, _ := json.Marshal(dp) // no err will happen :)
       hash := gthCrypto.Keccak256(marshalled)
       bHash := new(big.Int).SetBytes(hash)
@@ -86,7 +88,8 @@ func main() {
   sampleIdx := randIdxArray[42]
   dp := &DataPoint{Filename: exampleFilename,
                    Idx: sampleIdx,
-                   Data: data[sampleIdx]}
+                   Data: data[sampleIdx],
+                   GlobalDisambiguator: seedHash}
   fmt.Println("debug sample dp", dp)
   marshalled, _ := json.Marshal(dp) // no err will happen :)
   hash := gthCrypto.Keccak256(marshalled)
